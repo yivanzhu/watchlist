@@ -56,12 +56,16 @@ def initdb(drop):
     db.create_all()
     click.echo('Initialized database.')
 
-@app.route('/')  # 装饰器来为这个函数绑定对应的 URL 装饰器
-def index():             # 定义视图函数
-    user = User.query.first()  #读取用户记录
-    movies = Movie.query.all() # 读取所有电影记录
-     
-    return render_template('index.html', user=user, movies=movies)  # 返回字符串
+
+@app.context_processor
+def inject_user(): # 函数名称可以任意修改
+    user = User.query.first()
+    return dict(user=user) # 需要返回字典
+
+@app.errorhandler(404)
+def page_not_found(e):
+	    return render_template('404.html'), 404
+
 
 class User(db.Model): 
     id = db.Column(db.Integer, primary_key=True)
@@ -74,3 +78,8 @@ class Movie(db.Model):
     title = db.Column(db.String(60)) # 电影标题
     year = db.Column(db.String(4)) # 电影年份
 
+@app.route('/')  # 装饰器来为这个函数绑定对应的 URL 装饰器
+def index():             # 定义视图函数
+    # user = User.query.first()  #读取用户记录
+    movies = Movie.query.all() # 读取所有电影记录
+    return render_template('index.html', movies=movies)  # 返回字符串
