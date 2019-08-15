@@ -1,5 +1,8 @@
 import unittest
 from app import app, db, forge, initdb, Movie, User  # 导入需要测试的命令
+from watchlist import app, db
+from watchlist.models import Movie, User
+from watchlist.commands import forge, initdb
 
 class WatchlistTestCase(unittest.TestCase):
     def setUp(self):
