@@ -14,9 +14,11 @@ else:
     prefix = 'sqlite:////'
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'dev'
+# 把需要在生成环境下使用的配置改为优先从环境变量中读取，如果没有读取到，则使用默认值
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev')
 app.config['SQLALCHEMY_DATABASE_URI'] = prefix + \
-	os.path.join(os.path.dirname(app.root_path), 'data.db')
+    os.path.join(os.path.dirname(app.root_path),
+                 os.getenv('DATABASE_FILE', 'data.db'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
